@@ -28,7 +28,7 @@
             crossorigin="anonymous"></script>
     <script type="text/javascript">
         setTimeout(function() {
-            window.axios.get('/api/user')
+            window.axios.get('/api/transactions')
                 .then(function (response) {
                     console.log(response.data);
                 });
