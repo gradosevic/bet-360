@@ -69,7 +69,7 @@
                     this.amount = null;
                 })
                 .catch((error) => {
-                    console.log(error.response);
+                    //console.log(error.response);
                     this.error = error.response.data.message;
                     this.saving = false;
                 });
@@ -78,11 +78,11 @@
                 this.error = null;
                 window.axios.get('/api/users')
                 .then((response) => {
-                    console.log(response.data);
+                    //console.log(response.data);
                     this.users = response.data;
                 })
                 .catch((error) => {
-                    console.log(error.response);
+                    //console.log(error.response);
                     this.error = error.response.data.message;
                 });
             }

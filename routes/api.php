@@ -26,7 +26,10 @@ Route::group(['middleware'=>'auth:api'], function()
     Route::post('deposit', 'ApiController@deposit');
     Route::post('withdrawal', 'ApiController@withdrawal');
 
+    Route::get('transaction/{id}', 'ApiController@transaction');
+
     Route::get('transactions', 'ApiController@transactions');
+    Route::post('transactions', 'ApiController@transactions');
 
     Route::post('reports', 'ApiController@reports');
 });

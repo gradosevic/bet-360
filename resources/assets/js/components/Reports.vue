@@ -5,12 +5,16 @@
         <div class="card-body">
             <div class="filters">
                 <label for="from">From:</label>
-                <input v-model="filter.from" type="text" id="from">&nbsp;
+                <input type="text" id="from" class="form-control">
                 <label for="to">To:</label>
-                <input v-model="filter.to" type="text" id="to">
+                <input type="text" id="to" class="form-control">
+                <br/>
+                <button type="submit" class="btn btn-primary" @click="go">Go</button>
             </div>
-            <div v-if="reports" class="reports">
-                <table class="table">
+            <br/>
+            <div v-if="reports && !loading" class="reports">
+                <span v-if="!reports.length">No reports found.</span>
+                <table class="table" v-if="reports.length">
                     <thead>
                         <tr>
                             <th><abbr title="Date">Date</abbr></th>
@@ -35,7 +39,7 @@
                     </tbody>
                 </table>
             </div>
-            <div v-if="!reports">Loading...</div>
+            <div v-if="loading">Loading...</div>
         </div>
     </div>
     </div>
@@ -46,10 +50,7 @@
         data() {
             return {
                 reports: null,
-                filter:{
-                    from: null,
-                    to: null
-                }
+                loading: false
             };
         },
         methods:{
@@ -59,23 +60,25 @@
             formatPrice(value) {
                 let val = (value/1).toFixed(2).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            },
+            go(){
+                this.loading = true;
+                window.axios.post('/api/reports', {
+                    from: $( "#from").val(),
+                    to: $( "#to").val()
+                })
+                .then((response) => {
+                    //console.log(response.data);
+                    this.reports = response.data;
+                    this.loading = false;
+                });
             }
-        },
-        created(){
         },
         mounted()
         {
-            window.axios.post('/api/reports', {
-                from: this.filter.from,
-                to: this.filter.to
-            })
-            .then((response) => {
-                console.log(response.data);
-                this.reports = response.data;
-            });
             $( function() {
-                $( "#from" ).datepicker();
-                $( "#to" ).datepicker();
+                $( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
+                $( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' });
             } );
         }
     }

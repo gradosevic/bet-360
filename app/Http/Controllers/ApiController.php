@@ -24,9 +24,13 @@ class ApiController extends Controller
         $user->percent_bonus = User::generateBonus();
         $user->country = $request->get('country');
         $user->balance = $request->get('balance');
-
         $password = $request->get('password');
         $password2 = $request->get('password2');
+
+        if(!$user->name || !$user->email || !$user->country || !$user->balance || !$password || !$password2){
+            throw new \Exception('Please fill in all fields.');
+        }
+
         if($password != $password2){
             throw new \Exception('Passwords do not match');
         }
@@ -64,17 +68,18 @@ class ApiController extends Controller
                 $user->balance += $amount * $user->percent_bonus / 100;
             }
 
-            $user->transactions()->save(Transaction::create([
+            $t = Transaction::create([
                 'type' => Transaction::TYPE_DEPOSIT,
                 'country' => $user->country,
                 'date' => Carbon::now(),
                 'amount' => $amount,
                 'user_id' => $user->id
-            ]));
+            ]);
+            $user->transactions()->save($t);
 
             $user->save();
         }
-        return $user;
+        return $t;
     }
 
     public function withdrawal(Request $request){
@@ -88,30 +93,60 @@ class ApiController extends Controller
             }
             $user->balance -= $amount;
 
-            $user->transactions()->save(Transaction::create([
+            $t = Transaction::create([
                 'type' => Transaction::TYPE_DEPOSIT,
                 'country' => $user->country,
                 'date' => Carbon::now(),
                 'amount' => $amount,
                 'user_id' => $user->id
-            ]));
+            ]);
+
+            $user->transactions()->save($t);
             $user->save();
         }
-        return $user;
+        return $t;
     }
 
-    public function transactions()
+    public function transaction($id)
     {
-        return Transaction::with(array('user' => function($query)
+        return Transaction::find($id);
+    }
+
+    public function transactions(Request $request)
+    {
+        $from = $request->get('from');
+        $to = $request->get('to');
+        $user_id = $request->get('user_id');
+
+        $request = Transaction::with(array('user' => function($query)
         {
             $query->select('name', 'id');
 
-        }))->get();
+        }));
+
+        if($user_id){
+            $request->where('user_id', $user_id);
+        }
+
+        if($from){
+            $request->where('date','>=', $from);
+        }
+
+        if($to){
+            $request->where('date','<=', $to);
+        }
+
+        $request->orderBy('date', 'type');
+
+        return $request->get();
     }
 
-    public function reports()
+    public function reports(Request $request)
     {
-        $data = \DB::table('transactions')
+        $from = $request->get('from');
+        $to = $request->get('to');
+
+        $request = \DB::table('transactions')
         ->selectRaw("
                     sum(case when type = '1' then amount else 0 end) as total_deposits,
                     sum(case when type = '2' then amount else 0 end) as total_withdrawals,
@@ -120,11 +155,19 @@ class ApiController extends Controller
                     count(distinct user_id) as users,
                     date,
                     country
-        ")
-            //->where('date', '2018-06-27')
-        ->orderBy('date', 'country')
-        ->groupBy('date', 'country')
-        ->get();
-        return $data;
+        ");
+
+        if($from){
+            $request->where('date','>=', $from);
+        }
+
+        if($to){
+            $request->where('date','<=', $to);
+        }
+
+        $request->orderBy('date', 'country')
+        ->groupBy('date', 'country');
+
+        return $request->get();
     }
 }

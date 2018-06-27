@@ -6,8 +6,10 @@
             <div v-if="error">
                 <span style="color: red">{{error}}</span>
             </div>
-            <div v-if="users" class="user field is-horizontal">
-                <button type="submit" @click="newUser" class="btn btn-primary">New User</button>
+            <div v-if="users && context !=='new'" class="user field is-horizontal">
+                <div class="form-group">
+                    <button style="max-width: 100px" type="submit" @click="newUser" class="btn btn-primary form-control">New User</button>
+                </div>
                 <div>
                     <div class="form-group">
                         <label for="selectUser">User</label>
@@ -149,9 +151,10 @@
                         this.context = 'view';
                     })
                     .catch((error) => {
-                        console.log(error.response);
+                        //console.log(error.response);
                         this.error = error.response.data.message;
                         this.saving = false;
+                        this.context = 'edit';
                     });
                 }
                 //CREATE NEW USER
@@ -159,6 +162,7 @@
                     window.axios.put('/api/user', this.user)
                     .then((response) => {
                         this.saving = false;
+                        this.selectedUserId = response.data.id;
                         this.loadUsers();
                         this.context = 'view';
                     })
@@ -166,6 +170,7 @@
                         console.log(error.response);
                         this.error = error.response.data.message;
                         this.saving = false;
+                        this.context = 'new';
                     });
                 }
             },
@@ -176,7 +181,7 @@
                     this.users = response.data;
                 })
                 .catch((error) => {
-                    console.log(error.response);
+                    //console.log(error.response);
                     this.error = error.response.data.message;
                 });
             }

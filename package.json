@@ -1,6 +1,7 @@
 {
     "private": true,
     "scripts": {
+        "test": "jest",
         "dev": "npm run development",
         "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
         "watch": "npm run development -- --watch",
@@ -12,11 +13,13 @@
     "devDependencies": {
         "axios": "^0.18",
         "bootstrap": "^4.0.0",
-        "popper.js": "^1.12",
         "cross-env": "^5.1",
+        "jest": "^23.2.0",
         "jquery": "^3.2",
+        "jquery-ui": "^1.12.1",
         "laravel-mix": "^2.0",
         "lodash": "^4.17.4",
+        "popper.js": "^1.12",
         "vue": "^2.5.7"
     },
     "dependencies": {
