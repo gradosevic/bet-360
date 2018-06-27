@@ -2,6 +2,11 @@
 This is a sample Laravel project with Laravel API consumed by a client made with Vue.js
 # Installation
 
+Clone the repository
+```
+git clone https://github.com/gradosevic/bet-360.git
+```
+
 Copy **.env.example** to **.env** and update (at least) **APP_URL** and **DB_*** with your own values. The API can be consumed by any other REST clients.
 
 Install dependencies:
@@ -14,7 +19,7 @@ npm i
 
 Build 
 ```
-npm prod
+npm run prod
 ```
 
 Run DB migrations
