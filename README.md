@@ -1,5 +1,5 @@
 # Bet 360
-This is a sample Laravel project that has Laravel API consumed by a client made with Vue.js
+This is a sample Laravel project with Laravel API consumed by a client made with Vue.js
 # Installation
 
 Copy **.env.example** to **.env** and update (at least) **APP_URL** and **DB_*** with your own values. The API can be consumed by any other REST clients.
@@ -19,7 +19,7 @@ npm prod
 
 Run DB migrations
 ```
-php artisan migrate --seed
+php artisan migrate
 ```
 
 Add test data
@@ -29,7 +29,7 @@ php artisan db:seed
 
 Create REST API clients
 ```
-php artisan passport:install --force
+php artisan passport:install
 ```
 
 # App Client
