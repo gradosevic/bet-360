@@ -13,7 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class ApiTest extends TestCase
 {
     /**
-     * Tests /api/users method returns an array of users
+     * Tests GET /api/users method. It should return an array of users
      */
     public function test_get_users()
     {
@@ -34,6 +34,9 @@ class ApiTest extends TestCase
         $this->assertTrue(!empty($item['country']));
     }
 
+    /**
+     * Tests GET /api/user/{id} method
+     */
     public function test_get_user(){
         $this->withoutMiddleware();
 
@@ -51,6 +54,9 @@ class ApiTest extends TestCase
         $this->assertEquals($user->balance, $data['balance']);
     }
 
+    /**
+     * Tests PUT /api/user method
+     */
     public function test_create_user(){
         $this->withoutMiddleware();
         $this->clearTestUser();
@@ -81,6 +87,9 @@ class ApiTest extends TestCase
         $this->assertTrue(empty($data['exception']));
     }
 
+    /***
+     * Tests PUT /api/user method
+     */
     public function test_try_to_create_a_user_with_the_same_email_address(){
         $this->withoutMiddleware();
 
@@ -102,6 +111,9 @@ class ApiTest extends TestCase
         $this->assertFalse(empty($data['exception']));
     }
 
+    /**
+     * Tests POST /api/user method
+     */
     public function test_update_existing_user(){
         $this->withoutMiddleware();
 
@@ -145,6 +157,9 @@ class ApiTest extends TestCase
 
     }
 
+    /**
+     * Tests that changing user's country does not affect previous transactions
+     */
     public function test_user_changing_country_does_not_affect_transaction_coutry(){
         $this->withoutMiddleware();
 
@@ -168,6 +183,9 @@ class ApiTest extends TestCase
         $this->assertEquals($t->country, $transaction['country']);
     }
 
+    /**
+     * Tests POST /api/deposit method
+     */
     public function test_deposit(){
         $this->withoutMiddleware();
 
@@ -214,6 +232,9 @@ class ApiTest extends TestCase
 
     }
 
+    /**
+     * Tests that /api/deposit method has minimum allowed deposit limitation
+     */
     public function test_minimum_allowed_deposit(){
         $this->withoutMiddleware();
 
@@ -246,6 +267,9 @@ class ApiTest extends TestCase
         $this->assertEquals($balance + $firstDeposit, $user->balance);
     }
 
+    /**
+     * Tests GET /api/transactions method
+     */
     public function test_get_transactions(){
         $this->withoutMiddleware();
 
@@ -274,6 +298,9 @@ class ApiTest extends TestCase
         $this->assertTrue(!empty($t['user']['id']));
     }
 
+    /**
+     * Tests /api/transactions method filtered by user
+     */
     public function test_get_user_transactions(){
         $this->withoutMiddleware();
 
@@ -311,6 +338,9 @@ class ApiTest extends TestCase
         $this->assertEquals($t2->type, $trans[1]['type']);
     }
 
+    /**
+     * Tests /api/transactions method filtered by date
+     */
     public function test_get_transactions_filtered_by_date(){
         $this->withoutMiddleware();
 
@@ -349,6 +379,9 @@ class ApiTest extends TestCase
         $this->assertEquals($t1->type, $trans[0]['type']);
     }
 
+    /**
+     * Tests /api/transaction/{id} method
+     */
     public function test_get_transaction(){
         $this->withoutMiddleware();
 
@@ -373,6 +406,9 @@ class ApiTest extends TestCase
         $this->assertEquals($t1->user_id, $data['user_id']);
     }
 
+    /**
+     * Tests /api/withdrawal method
+     */
     public function test_withdrawal(){
         $this->withoutMiddleware();
 
@@ -391,6 +427,9 @@ class ApiTest extends TestCase
         $this->assertEquals($balance - $withdrawalAmount, $user->balance);
     }
 
+    /**
+     * Tests that /api/withdrawal method has minimum amount limitation
+     */
     public function test_minimum_withdrawal_amount(){
         $this->withoutMiddleware();
 
@@ -423,6 +462,9 @@ class ApiTest extends TestCase
         $this->assertEquals($balance - $firstWithdrawal, $user->balance);
     }
 
+    /**
+     * Tests /api/reports method
+     */
     public function test_report_returns_aggregated_data(){
         $this->withoutMiddleware();
 
@@ -474,6 +516,9 @@ class ApiTest extends TestCase
         ]);
     }
 
+    /**
+     * Tests /api/reports filter by dates (from, to)
+     */
     public function test_report_filters_today(){
         $this->withoutMiddleware();
 
@@ -508,6 +553,11 @@ class ApiTest extends TestCase
     }
 
     //PRIVATE METHODS - HELPERS
+
+    /**
+     * Clears test user
+     * @param string $userEmail
+     */
     private function clearTestUser($userEmail = 'test@test.com'){
         $userRecord = $this->getTestUser($userEmail);
         if($userRecord){
@@ -515,10 +565,20 @@ class ApiTest extends TestCase
         }
     }
 
+    /**
+     * Returns test user
+     * @param string $userEmail
+     * @return mixed
+     */
     private function getTestUser($userEmail = 'test@test.com'){
         return User::where('email', $userEmail)->first();
     }
 
+    /**
+     * Add a new test user
+     * @param string $userEmail
+     * @return mixed
+     */
     private function addTestUser($userEmail = 'test@test.com'){
         return User::create([
             'name'=> 'Test',
@@ -531,6 +591,9 @@ class ApiTest extends TestCase
         ]);
     }
 
+    /**
+     * Add test data for testing reports
+     */
     private function addReportTestData(){
 
         $user1 = $this->addTestUser('user1@example.com');
@@ -600,6 +663,9 @@ class ApiTest extends TestCase
         ]));
     }
 
+    /**
+     * Clear test data for reports
+     */
     private function clearReportTestData(){
         $this->clearTestUser('user1@example.com');
         $this->clearTestUser('user2@example.com');

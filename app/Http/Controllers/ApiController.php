@@ -9,16 +9,36 @@ use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
+/***
+ * API Interface to Bet 360 app
+ * Class ApiController
+ * @package App\Http\Controllers
+ */
 class ApiController extends Controller
 {
+    /***
+     * Get an array of users
+     * @return array User
+     */
     public function users(){
         return User::orderBy('name')->get();
     }
 
+    /***
+     * Get user by ID
+     * @param $id User ID
+     * @return User
+     */
     public function getUser($id){
         return User::find($id);
     }
 
+    /***
+     * Create a new user
+     * @param Request $request
+     * @return User
+     * @throws \Exception validation errors
+     */
     public function createUser(Request $request){
 
         $user = new User;
@@ -47,6 +67,11 @@ class ApiController extends Controller
         return $user;
     }
 
+    /***
+     * Update an existing user
+     * @param Request $request
+     * @return User
+     */
     public function updateUser(Request $request){
         $user = User::find($request->get('id'));
         if($user){
@@ -55,6 +80,12 @@ class ApiController extends Controller
         return $user;
     }
 
+    /***
+     * Creates a new deposit transaction for a specified user
+     * @param Request $request
+     * @return Transaction
+     * @throws \Exception Minimal deposit amount
+     */
     public function deposit(Request $request){
         $user = User::find($request->get('user_id'));
 
@@ -86,6 +117,12 @@ class ApiController extends Controller
         return $t;
     }
 
+    /**
+     * Creates a new withdrawal transaction for a specified user
+     * @param Request $request
+     * @return mixed
+     * @throws \Exception Minimal withdrawal amount
+     */
     public function withdrawal(Request $request){
         $user = User::find($request->get('user_id'));
         if($user){
@@ -111,11 +148,22 @@ class ApiController extends Controller
         return $t;
     }
 
+    /**
+     * Get an existing transaction by ID
+     * @param $id Transaction ID
+     * @return Transaction
+     */
     public function transaction($id)
     {
         return Transaction::find($id);
     }
 
+    /**
+     * Returns an array of transactions
+     * Optional filters: user_id, from, to
+     * @param Request $request
+     * @return array Transaction
+     */
     public function transactions(Request $request)
     {
         $from = $request->get('from');
@@ -145,6 +193,12 @@ class ApiController extends Controller
         return $request->get();
     }
 
+    /***
+     * Returns an array of report data
+     * Optional filters: from(date), to(date)
+     * @param Request $request
+     * @return array<array(Report data)>
+     */
     public function reports(Request $request)
     {
         $from = $request->get('from');
