@@ -5,7 +5,7 @@
 </style>
 
 <template>
-    <div>
+    <div class="col-md-6">
         <div>
             <div class="card card-default">
                 <div class="card-header">
@@ -23,7 +23,7 @@
                 <div class="card-body">
                     <!-- No Tokens Notice -->
                     <p class="mb-0" v-if="tokens.length === 0">
-                        You have not created any personal access tokens.
+                        You have not created any access tokens.
                     </p>
 
                     <!-- Personal Access Tokens -->

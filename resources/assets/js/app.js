@@ -26,6 +26,11 @@ Vue.component('example-component', require('./components/ExampleComponent.vue'))
 Vue.component('passport-clients', require('./components/passport/Clients.vue'));
 Vue.component('passport-authorized-clients', require('./components/passport/AuthorizedClients.vue'));
 Vue.component('passport-personal-access-tokens', require('./components/passport/PersonalAccessTokens.vue'));
+Vue.component('new-transaction', require('./components/NewTransaction.vue'));
+Vue.component('transactions', require('./components/Transactions.vue'));
+Vue.component('reports', require('./components/Reports.vue'));
+Vue.component('users', require('./components/Users.vue'));
+Vue.component('app', require('./components/App.vue'));
 
 const app = new Vue({
     el: '#app'

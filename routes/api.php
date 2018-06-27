@@ -19,5 +19,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['middleware'=>'auth:api'], function()
 {
+    Route::get('users', 'ApiController@users');
+    Route::put('user', 'ApiController@createUser');
+    Route::post('user', 'ApiController@updateUser');
+
+    Route::post('deposit', 'ApiController@deposit');
+    Route::post('withdrawal', 'ApiController@withdrawal');
+
     Route::get('transactions', 'ApiController@transactions');
+
+    Route::post('reports', 'ApiController@reports');
 });

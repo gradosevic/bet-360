@@ -21,6 +21,7 @@ class CreateTransactionsTable extends Migration
             $table->string('country');
             $table->float('amount', 8, 2);
             $table->integer('user_id')->unsigned();
+            $table->date('date')->format('Y-m-d');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });

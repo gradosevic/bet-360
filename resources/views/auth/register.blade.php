@@ -40,6 +40,19 @@
                         </div>
 
                         <div class="form-group row">
+                            <label for="country" class="col-md-4 col-form-label text-md-right">{{ __('Country') }}</label>
+
+                            <div class="col-md-6">
+                                <select name="country" class="form-control">
+                                    @foreach((array) countries() as $code => $c)
+                                        <option value="{{$code}}" {{old('country') == $code?'selected="selected"':''}}>{{$c}}</option>
+                                    @endforeach
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
 
                             <div class="col-md-6">

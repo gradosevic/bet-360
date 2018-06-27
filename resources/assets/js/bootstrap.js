@@ -11,6 +11,8 @@ window.Popper = require('popper.js').default;
 try {
     window.$ = window.jQuery = require('jquery');
 
+    import 'jquery-ui/ui/widgets/datepicker.js';
+
     require('bootstrap');
 } catch (e) {}
 
