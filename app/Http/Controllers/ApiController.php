@@ -15,6 +15,10 @@ class ApiController extends Controller
         return User::orderBy('name')->get();
     }
 
+    public function getUser($id){
+        return User::find($id);
+    }
+
     public function createUser(Request $request){
 
         $user = new User;

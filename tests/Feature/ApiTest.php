@@ -34,6 +34,23 @@ class ApiTest extends TestCase
         $this->assertTrue(!empty($item['country']));
     }
 
+    public function test_get_user(){
+        $this->withoutMiddleware();
+
+        $this->clearTestUser();
+        $user = $this->addTestUser();
+
+        $response = $this->json('GET', 'api/user/'.$user->id);
+        $data = $response->json();
+
+        $this->assertEquals($user->id, $data['id']);
+        $this->assertEquals($user->name, $data['name']);
+        $this->assertEquals($user->email, $data['email']);
+        $this->assertEquals($user->percent_bonus, $data['percent_bonus']);
+        $this->assertEquals($user->country, $data['country']);
+        $this->assertEquals($user->balance, $data['balance']);
+    }
+
     public function test_create_user(){
         $this->withoutMiddleware();
         $this->clearTestUser();
