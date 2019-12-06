@@ -5,14 +5,12 @@ use Illuminate\Http\Request;
 use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
-
 /***
  * API Interface to Bet 360 app
  * Class ApiController
  * @package App\Http\Controllers
  */
-class ApiController extends Controller
-{
+class ApiController extends Controller{
     /***
      * Get an array of users
      * @return array User
