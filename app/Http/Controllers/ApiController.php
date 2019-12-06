@@ -1,12 +1,10 @@
-<?php
-namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers;
 use App\Http\Controllers\Auth\RegisterController;
 use App\User;
 use Illuminate\Http\Request;
 use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
-
 /***
  * API Interface to Bet 360 app
  * Class ApiController
