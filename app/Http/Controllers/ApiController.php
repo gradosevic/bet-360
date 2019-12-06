@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 use App\Http\Controllers\Auth\RegisterController;
 use App\User;
+
 use Illuminate\Http\Request;
 use App\Transaction;
 use Carbon\Carbon;
@@ -10,7 +11,9 @@ use Illuminate\Support\Facades\Hash;
  * Class ApiController
  * @package App\Http\Controllers
  */
-class ApiController extends Controller{
+class ApiController extends Controller
+
+{
     /***
      * Get an array of users
      * @return array User
