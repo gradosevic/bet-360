@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
  */
 class ApiController extends Controller
 
+
 {
     /***
      * Get an array of users
