@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Laravel\Passport\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -33,15 +33,17 @@ class User extends Authenticatable
         return $this->hasMany('App\Transaction');
     }
 
-    public function deposits(){
+    public function deposits()
+    {
         return $this->transactions()->where('type', 1)->get();
     }
 
     /**
-     * Returns random bonus value between 5 and 20 (%)
+     * Returns random bonus value between 5 and 20 (%).
      * @return int Bonus between 5 and 20 (%)
      */
-    public static function generateBonus(){
+    public static function generateBonus()
+    {
         return rand(5, 20);
     }
 }
