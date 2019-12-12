@@ -1,7 +1,10 @@
 {
     "name": "laravel/laravel",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -16,7 +19,7 @@
         "fzaninotto/faker": "^1.4",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^2.0",
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^8.0"
     },
     "autoload": {
         "classmap": [
@@ -26,7 +29,7 @@
         "psr-4": {
             "App\\": "app/"
         },
-        "files":[
+        "files": [
             "app/Helpers/Bet360Helpers.php"
         ]
     },
@@ -37,8 +40,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [
-            ]
+            "dont-discover": []
         }
     },
     "scripts": {
@@ -52,7 +54,7 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover"
         ],
-        "test" : [
+        "test": [
             "vendor/bin/phpunit"
         ]
     },
