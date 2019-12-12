@@ -167,11 +167,11 @@ class ApiController extends Controller
         $to = $request->get('to');
         $user_id = $request->get('user_id');
 
-        $request = Transaction::with(array('user' => function($query)
+        $request = Transaction::with(['user' => function($query)
         {
             $query->select('name', 'id');
 
-        }));
+        }]);
 
         if($user_id){
             $request->where('user_id', $user_id);
