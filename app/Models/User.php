@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -30,7 +30,7 @@ class User extends Authenticatable
 
     public function transactions()
     {
-        return $this->hasMany(\App\Transaction::class);
+        return $this->hasMany(\App\Models\Transaction::class);
     }
 
     public function deposits()
