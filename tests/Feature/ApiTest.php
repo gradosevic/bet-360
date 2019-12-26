@@ -37,7 +37,8 @@ class ApiTest extends TestCase
     /**
      * Tests GET /api/user/{id} method
      */
-    public function test_get_user(){
+    public function test_get_user()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -57,7 +58,8 @@ class ApiTest extends TestCase
     /**
      * Tests PUT /api/user method
      */
-    public function test_create_user(){
+    public function test_create_user()
+    {
         $this->withoutMiddleware();
         $this->clearTestUser();
 
@@ -90,7 +92,8 @@ class ApiTest extends TestCase
     /***
      * Tests PUT /api/user method
      */
-    public function test_try_to_create_a_user_with_the_same_email_address(){
+    public function test_try_to_create_a_user_with_the_same_email_address()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -114,7 +117,8 @@ class ApiTest extends TestCase
     /**
      * Tests POST /api/user method
      */
-    public function test_update_existing_user(){
+    public function test_update_existing_user()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -131,7 +135,7 @@ class ApiTest extends TestCase
 
         //Clear updated test user from previous testing
         $updatedTestUser = User::where('email', $updatedUserEmail)->first();
-        if($updatedTestUser){
+        if ($updatedTestUser) {
             $updatedTestUser->delete();
         }
 
@@ -154,13 +158,13 @@ class ApiTest extends TestCase
         //Make sure that user with the previous email does not exist
         $previousUser = User::where('email', $userEmail)->first();
         $this->assertNull($previousUser);
-
     }
 
     /**
      * Tests that changing user's country does not affect previous transactions
      */
-    public function test_user_changing_country_does_not_affect_transaction_coutry(){
+    public function test_user_changing_country_does_not_affect_transaction_coutry()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -179,14 +183,15 @@ class ApiTest extends TestCase
         $user->country = 'US';
         $user->save();
 
-        $t = Transaction::where('id',$transaction['id'])->first();
+        $t = Transaction::where('id', $transaction['id'])->first();
         $this->assertEquals($t->country, $transaction['country']);
     }
 
     /**
      * Tests POST /api/deposit method
      */
-    public function test_deposit(){
+    public function test_deposit()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -229,13 +234,13 @@ class ApiTest extends TestCase
         $expectedFinalBalance += $thirdDeposit * $user->percent_bonus / 100;
 
         $this->assertEquals($expectedFinalBalance, $user->balance);
-
     }
 
     /**
      * Tests that /api/deposit method has minimum allowed deposit limitation
      */
-    public function test_minimum_allowed_deposit(){
+    public function test_minimum_allowed_deposit()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -270,7 +275,8 @@ class ApiTest extends TestCase
     /**
      * Tests GET /api/transactions method
      */
-    public function test_get_transactions(){
+    public function test_get_transactions()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -301,7 +307,8 @@ class ApiTest extends TestCase
     /**
      * Tests /api/transactions method filtered by user
      */
-    public function test_get_user_transactions(){
+    public function test_get_user_transactions()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -341,7 +348,8 @@ class ApiTest extends TestCase
     /**
      * Tests /api/transactions method filtered by date
      */
-    public function test_get_transactions_filtered_by_date(){
+    public function test_get_transactions_filtered_by_date()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -382,7 +390,8 @@ class ApiTest extends TestCase
     /**
      * Tests /api/transaction/{id} method
      */
-    public function test_get_transaction(){
+    public function test_get_transaction()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -409,7 +418,8 @@ class ApiTest extends TestCase
     /**
      * Tests /api/withdrawal method
      */
-    public function test_withdrawal(){
+    public function test_withdrawal()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -430,7 +440,8 @@ class ApiTest extends TestCase
     /**
      * Tests that /api/withdrawal method has minimum amount limitation
      */
-    public function test_minimum_withdrawal_amount(){
+    public function test_minimum_withdrawal_amount()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -465,7 +476,8 @@ class ApiTest extends TestCase
     /**
      * Tests /api/reports method
      */
-    public function test_report_returns_aggregated_data(){
+    public function test_report_returns_aggregated_data()
+    {
         $this->withoutMiddleware();
 
         $this->clearReportTestData();
@@ -519,7 +531,8 @@ class ApiTest extends TestCase
     /**
      * Tests /api/reports filter by dates (from, to)
      */
-    public function test_report_filters_today(){
+    public function test_report_filters_today()
+    {
         $this->withoutMiddleware();
 
         $this->clearReportTestData();
@@ -558,9 +571,10 @@ class ApiTest extends TestCase
      * Clears test user
      * @param string $userEmail
      */
-    private function clearTestUser($userEmail = 'test@test.com'){
+    private function clearTestUser($userEmail = 'test@test.com')
+    {
         $userRecord = $this->getTestUser($userEmail);
-        if($userRecord){
+        if ($userRecord) {
             $userRecord->delete();
         }
     }
@@ -570,7 +584,8 @@ class ApiTest extends TestCase
      * @param string $userEmail
      * @return mixed
      */
-    private function getTestUser($userEmail = 'test@test.com'){
+    private function getTestUser($userEmail = 'test@test.com')
+    {
         return User::where('email', $userEmail)->first();
     }
 
@@ -579,7 +594,8 @@ class ApiTest extends TestCase
      * @param string $userEmail
      * @return mixed
      */
-    private function addTestUser($userEmail = 'test@test.com'){
+    private function addTestUser($userEmail = 'test@test.com')
+    {
         return User::create([
             'name'=> 'Test',
             'email' => $userEmail,
@@ -594,7 +610,8 @@ class ApiTest extends TestCase
     /**
      * Add test data for testing reports
      */
-    private function addReportTestData(){
+    private function addReportTestData()
+    {
 
         $user1 = $this->addTestUser('user1@example.com');
         $user2 = $this->addTestUser('user2@example.com');
@@ -666,7 +683,8 @@ class ApiTest extends TestCase
     /**
      * Clear test data for reports
      */
-    private function clearReportTestData(){
+    private function clearReportTestData()
+    {
         $this->clearTestUser('user1@example.com');
         $this->clearTestUser('user2@example.com');
 
