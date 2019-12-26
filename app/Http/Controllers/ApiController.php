@@ -1,11 +1,12 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\RegisterController;
-use App\User;
-use Illuminate\Http\Request;
 use App\Transaction;
+use App\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 /***
@@ -42,8 +43,7 @@ class ApiController extends Controller
      */
     public function createUser(Request $request)
     {
-
-        $user = new User;
+        $user = new User();
         $user->name = $request->get('name');
         $user->email = $request->get('email');
 
@@ -64,7 +64,7 @@ class ApiController extends Controller
 
         if (RegisterController::validator($request->all())) {
             $user->save();
-        };
+        }
 
         return $user;
     }
@@ -80,6 +80,7 @@ class ApiController extends Controller
         if ($user) {
             $user->fill($request->all())->save();
         }
+
         return $user;
     }
 
@@ -108,24 +109,28 @@ class ApiController extends Controller
             }
 
             $t = Transaction::create([
-                'type' => Transaction::TYPE_DEPOSIT,
+                'type'    => Transaction::TYPE_DEPOSIT,
                 'country' => $user->country,
-                'date' => Carbon::now(),
-                'amount' => $amount,
-                'user_id' => $user->id
+                'date'    => Carbon::now(),
+                'amount'  => $amount,
+                'user_id' => $user->id,
             ]);
             $user->transactions()->save($t);
 
             $user->save();
         }
+
         return $t;
     }
 
     /**
-     * Creates a new withdrawal transaction for a specified user
+     * Creates a new withdrawal transaction for a specified user.
+     *
      * @param Request $request
-     * @return mixed
+     *
      * @throws \Exception Minimal withdrawal amount
+     *
+     * @return mixed
      */
     public function withdrawal(Request $request)
     {
@@ -140,22 +145,25 @@ class ApiController extends Controller
             $user->balance -= $amount;
 
             $t = Transaction::create([
-                'type' => Transaction::TYPE_DEPOSIT,
+                'type'    => Transaction::TYPE_DEPOSIT,
                 'country' => $user->country,
-                'date' => Carbon::now(),
-                'amount' => $amount,
-                'user_id' => $user->id
+                'date'    => Carbon::now(),
+                'amount'  => $amount,
+                'user_id' => $user->id,
             ]);
 
             $user->transactions()->save($t);
             $user->save();
         }
+
         return $t;
     }
 
     /**
-     * Get an existing transaction by ID
+     * Get an existing transaction by ID.
+     *
      * @param $id Transaction ID
+     *
      * @return Transaction
      */
     public function transaction($id)
@@ -165,8 +173,10 @@ class ApiController extends Controller
 
     /**
      * Returns an array of transactions
-     * Optional filters: user_id, from, to
+     * Optional filters: user_id, from, to.
+     *
      * @param Request $request
+     *
      * @return array Transaction
      */
     public function transactions(Request $request)
@@ -175,9 +185,9 @@ class ApiController extends Controller
         $to = $request->get('to');
         $user_id = $request->get('user_id');
 
-        $request = Transaction::with(array('user' => function ($query) {
+        $request = Transaction::with(['user' => function ($query) {
             $query->select('name', 'id');
-        }));
+        }]);
 
         if ($user_id) {
             $request->where('user_id', $user_id);
