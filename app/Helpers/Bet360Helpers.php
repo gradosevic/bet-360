@@ -1,8 +1,8 @@
 <?php
+
 function countries()
 {
-    return array
-    (
+    return [
         'AF' => 'Afghanistan',
         'AX' => 'Aland Islands',
         'AL' => 'Albania',
@@ -248,5 +248,5 @@ function countries()
         'YE' => 'Yemen',
         'ZM' => 'Zambia',
         'ZW' => 'Zimbabwe',
-    );
+    ];
 }
