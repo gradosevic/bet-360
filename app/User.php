@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Laravel\Passport\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -39,7 +39,8 @@ class User extends Authenticatable
     }
 
     /**
-     * Returns random bonus value between 5 and 20 (%)
+     * Returns random bonus value between 5 and 20 (%).
+     *
      * @return int Bonus between 5 and 20 (%)
      */
     public static function generateBonus()
