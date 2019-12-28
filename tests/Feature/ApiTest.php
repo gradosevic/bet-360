@@ -5,9 +5,6 @@ namespace Tests\Feature;
 use App\Transaction;
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use PHPUnit\Framework\TestResult;
 use Tests\TestCase;
 
 class ApiTest extends TestCase
@@ -26,12 +23,12 @@ class ApiTest extends TestCase
         $this->assertTrue(count($data) > 0);
 
         $item = $data[0];
-        $this->assertTrue(! empty($item['id']));
-        $this->assertTrue(! empty($item['name']));
-        $this->assertTrue(! empty($item['email']));
+        $this->assertTrue(!empty($item['id']));
+        $this->assertTrue(!empty($item['name']));
+        $this->assertTrue(!empty($item['email']));
         $this->assertEquals($item['email'], filter_var($item['email'], FILTER_VALIDATE_EMAIL));
-        $this->assertTrue(! empty($item['percent_bonus']));
-        $this->assertTrue(! empty($item['country']));
+        $this->assertTrue(!empty($item['percent_bonus']));
+        $this->assertTrue(!empty($item['country']));
     }
 
     /**
@@ -69,12 +66,12 @@ class ApiTest extends TestCase
         $balance = '10.00';
 
         $response = $this->json('PUT', 'api/user', [
-            'name'=> $userName,
-            'email' => $userEmail,
-            'country' => $country,
-            'password' => 'password',
+            'name'      => $userName,
+            'email'     => $userEmail,
+            'country'   => $country,
+            'password'  => 'password',
             'password2' => 'password',
-            'balance' => '10.00',
+            'balance'   => '10.00',
         ]);
 
         $data = $response->json();
@@ -102,12 +99,12 @@ class ApiTest extends TestCase
         $userEmail = 'test@test.com';
 
         $response = $this->json('PUT', 'api/user', [
-            'email' => $userEmail,
-            'name'=> 'Test',
-            'country' => 'BA',
-            'password' => 'password',
+            'email'     => $userEmail,
+            'name'      => 'Test',
+            'country'   => 'BA',
+            'password'  => 'password',
             'password2' => 'password',
-            'balance' => '10.00',
+            'balance'   => '10.00',
         ]);
         $data = $response->json();
         $this->assertTrue(empty($data['email']));
@@ -140,11 +137,11 @@ class ApiTest extends TestCase
         }
 
         $response = $this->json('POST', 'api/user', [
-            'email' => $updatedUserEmail,
-            'name'=> $updatedUserName,
+            'email'   => $updatedUserEmail,
+            'name'    => $updatedUserName,
             'country' => $updatedCountry,
             'balance' => $updatedBalance,
-            'id' => $user->id,
+            'id'      => $user->id,
         ]);
 
         $data = $response->json();
@@ -171,8 +168,8 @@ class ApiTest extends TestCase
 
         $response = $this->json('POST', 'api/deposit', [
             'user_id' => $user->id,
-            'amount' => 10,
-            'type'=> Transaction::TYPE_DEPOSIT,
+            'amount'  => 10,
+            'type'    => Transaction::TYPE_DEPOSIT,
         ]);
         $transaction = $response->json();
 
@@ -202,7 +199,7 @@ class ApiTest extends TestCase
         $firstDeposit = 14.23;
         $response = $this->json('POST', 'api/deposit', [
             'user_id' => $user->id,
-            'amount' => $firstDeposit,
+            'amount'  => $firstDeposit,
         ]);
 
         $user = $this->getTestUser();
@@ -212,7 +209,7 @@ class ApiTest extends TestCase
         $secondDeposit = 51.56;
         $response = $this->json('POST', 'api/deposit', [
             'user_id' => $user->id,
-            'amount' => $secondDeposit,
+            'amount'  => $secondDeposit,
         ]);
 
         $user = $this->getTestUser();
@@ -222,7 +219,7 @@ class ApiTest extends TestCase
         $thirdDeposit = 23.50;
         $response = $this->json('POST', 'api/deposit', [
             'user_id' => $user->id,
-            'amount' => $thirdDeposit,
+            'amount'  => $thirdDeposit,
         ]);
 
         $user = $this->getTestUser();
@@ -250,7 +247,7 @@ class ApiTest extends TestCase
         $firstDeposit = 5;
         $response = $this->json('POST', 'api/deposit', [
             'user_id' => $user->id,
-            'amount' => $firstDeposit,
+            'amount'  => $firstDeposit,
         ]);
 
         $user = $this->getTestUser();
@@ -260,13 +257,13 @@ class ApiTest extends TestCase
         $secondDeposit = 4;
         $response = $this->json('POST', 'api/deposit', [
             'user_id' => $user->id,
-            'amount' => $secondDeposit,
+            'amount'  => $secondDeposit,
         ]);
 
         $data = $response->json();
         $user = $this->getTestUser();
 
-        $this->assertTrue(! empty($data['exception']));
+        $this->assertTrue(!empty($data['exception']));
         $this->assertEquals($balance + $firstDeposit, $user->balance);
     }
 
@@ -281,10 +278,10 @@ class ApiTest extends TestCase
         $user = $this->addTestUser();
 
         $user->transactions()->save(Transaction::create([
-            'type' => Transaction::TYPE_DEPOSIT,
+            'type'    => Transaction::TYPE_DEPOSIT,
             'country' => 'BA',
-            'date' => Carbon::now(),
-            'amount' => 230,
+            'date'    => Carbon::now(),
+            'amount'  => 230,
             'user_id' => $user->id,
         ]));
 
@@ -294,12 +291,12 @@ class ApiTest extends TestCase
         $this->assertTrue(count($transactions) > 0);
 
         $t = $transactions[0];
-        $this->assertTrue(! empty($t['country']));
-        $this->assertTrue(! empty($t['date']));
-        $this->assertTrue(! empty($t['amount']));
-        $this->assertTrue(! empty($t['type']));
-        $this->assertTrue(! empty($t['user']['name']));
-        $this->assertTrue(! empty($t['user']['id']));
+        $this->assertTrue(!empty($t['country']));
+        $this->assertTrue(!empty($t['date']));
+        $this->assertTrue(!empty($t['amount']));
+        $this->assertTrue(!empty($t['type']));
+        $this->assertTrue(!empty($t['user']['name']));
+        $this->assertTrue(!empty($t['user']['id']));
     }
 
     /**
@@ -313,19 +310,19 @@ class ApiTest extends TestCase
         $user = $this->addTestUser();
 
         $t1 = Transaction::create([
-            'type' => Transaction::TYPE_DEPOSIT,
+            'type'    => Transaction::TYPE_DEPOSIT,
             'country' => 'BA',
-            'date' => Carbon::now(),
-            'amount' => 230,
+            'date'    => Carbon::now(),
+            'amount'  => 230,
             'user_id' => $user->id,
         ]);
         $user->transactions()->save($t1);
 
         $t2 = Transaction::create([
-            'type' => Transaction::TYPE_WITHDRAWAL,
+            'type'    => Transaction::TYPE_WITHDRAWAL,
             'country' => 'BA',
-            'date' => Carbon::yesterday(),
-            'amount' => 130,
+            'date'    => Carbon::yesterday(),
+            'amount'  => 130,
             'user_id' => $user->id,
         ]);
         $user->transactions()->save($t2);
@@ -356,26 +353,26 @@ class ApiTest extends TestCase
         $user = $this->addTestUser();
 
         $t1 = Transaction::create([
-            'type' => Transaction::TYPE_DEPOSIT,
+            'type'    => Transaction::TYPE_DEPOSIT,
             'country' => 'BA',
-            'date' => Carbon::now(),
-            'amount' => 230,
+            'date'    => Carbon::now(),
+            'amount'  => 230,
             'user_id' => $user->id,
         ]);
         $user->transactions()->save($t1);
 
         $t2 = Transaction::create([
-            'type' => Transaction::TYPE_WITHDRAWAL,
+            'type'    => Transaction::TYPE_WITHDRAWAL,
             'country' => 'BA',
-            'date' => Carbon::yesterday(),
-            'amount' => 130,
+            'date'    => Carbon::yesterday(),
+            'amount'  => 130,
             'user_id' => $user->id,
         ]);
         $user->transactions()->save($t2);
 
         $response = $this->json('GET', 'api/transactions', [
             'from' => Carbon::today()->format('Y-m-d'),
-            'to' => Carbon::today()->format('Y-m-d'),
+            'to'   => Carbon::today()->format('Y-m-d'),
         ]);
 
         $trans = $response->json();
@@ -396,10 +393,10 @@ class ApiTest extends TestCase
         $user = $this->addTestUser();
 
         $t1 = Transaction::create([
-            'type' => Transaction::TYPE_DEPOSIT,
+            'type'    => Transaction::TYPE_DEPOSIT,
             'country' => 'BA',
-            'date' => Carbon::now(),
-            'amount' => 230,
+            'date'    => Carbon::now(),
+            'amount'  => 230,
             'user_id' => $user->id,
         ]);
         $user->transactions()->save($t1);
@@ -428,7 +425,7 @@ class ApiTest extends TestCase
         $withdrawalAmount = 120;
         $response = $this->json('POST', 'api/withdrawal', [
             'user_id' => $user->id,
-            'amount' => $withdrawalAmount,
+            'amount'  => $withdrawalAmount,
         ]);
 
         $user = $this->getTestUser();
@@ -451,7 +448,7 @@ class ApiTest extends TestCase
         $firstWithdrawal = 100;
         $response = $this->json('POST', 'api/withdrawal', [
             'user_id' => $user->id,
-            'amount' => $firstWithdrawal,
+            'amount'  => $firstWithdrawal,
         ]);
 
         $user = $this->getTestUser();
@@ -461,13 +458,13 @@ class ApiTest extends TestCase
         $secondWithdrawal = 99;
         $response = $this->json('POST', 'api/withdrawal', [
             'user_id' => $user->id,
-            'amount' => $secondWithdrawal,
+            'amount'  => $secondWithdrawal,
         ]);
 
         $data = $response->json();
         $user = $this->getTestUser();
 
-        $this->assertTrue(! empty($data['exception']));
+        $this->assertTrue(!empty($data['exception']));
         $this->assertEquals($balance - $firstWithdrawal, $user->balance);
     }
 
@@ -483,45 +480,45 @@ class ApiTest extends TestCase
 
         $response = $this->json('POST', 'api/reports', [
             'from' => Carbon::yesterday()->format('Y-m-d'),
-            'to' => Carbon::today()->format('Y-m-d'),
+            'to'   => Carbon::today()->format('Y-m-d'),
         ]);
 
         $response->assertJson([
             [
-                'total_deposits' => 448,
+                'total_deposits'    => 448,
                 'total_withdrawals' => 0,
-                'deposits' => 3,
-                'withdrawals' => 0,
-                'users' => 2,
-                'date' => Carbon::now()->format('Y-m-d'),
-                'country' => 'BA',
+                'deposits'          => 3,
+                'withdrawals'       => 0,
+                'users'             => 2,
+                'date'              => Carbon::now()->format('Y-m-d'),
+                'country'           => 'BA',
             ],
             [
-                'total_deposits' => 0,
+                'total_deposits'    => 0,
                 'total_withdrawals' => 200,
-                'deposits' => 0,
-                'withdrawals' => 1,
-                'users' => 1,
-                'date' => Carbon::now()->format('Y-m-d'),
-                'country' => 'US',
+                'deposits'          => 0,
+                'withdrawals'       => 1,
+                'users'             => 1,
+                'date'              => Carbon::now()->format('Y-m-d'),
+                'country'           => 'US',
             ],
             [
-                'total_deposits' => 121,
+                'total_deposits'    => 121,
                 'total_withdrawals' => 421,
-                'deposits' => 1,
-                'withdrawals' => 1,
-                'users' => 1,
-                'date' => Carbon::yesterday()->format('Y-m-d'),
-                'country' => 'BA',
+                'deposits'          => 1,
+                'withdrawals'       => 1,
+                'users'             => 1,
+                'date'              => Carbon::yesterday()->format('Y-m-d'),
+                'country'           => 'BA',
             ],
             [
-                'total_deposits' => 0,
+                'total_deposits'    => 0,
                 'total_withdrawals' => 681,
-                'deposits' => 0,
-                'withdrawals' => 2,
-                'users' => 2,
-                'date' => Carbon::yesterday()->format('Y-m-d'),
-                'country' => 'US',
+                'deposits'          => 0,
+                'withdrawals'       => 2,
+                'users'             => 2,
+                'date'              => Carbon::yesterday()->format('Y-m-d'),
+                'country'           => 'US',
             ],
         ]);
     }
@@ -538,27 +535,27 @@ class ApiTest extends TestCase
 
         $response = $this->json('POST', 'api/reports', [
             'from' => Carbon::today()->format('Y-m-d'),
-            'to' => Carbon::today()->format('Y-m-d'),
+            'to'   => Carbon::today()->format('Y-m-d'),
         ]);
 
         $response->assertJson([
             [
-                'total_deposits' => 448,
+                'total_deposits'    => 448,
                 'total_withdrawals' => 0,
-                'deposits' => 3,
-                'withdrawals' => 0,
-                'users' => 2,
-                'date' => Carbon::now()->format('Y-m-d'),
-                'country' => 'BA',
+                'deposits'          => 3,
+                'withdrawals'       => 0,
+                'users'             => 2,
+                'date'              => Carbon::now()->format('Y-m-d'),
+                'country'           => 'BA',
             ],
             [
-                'total_deposits' => 0,
+                'total_deposits'    => 0,
                 'total_withdrawals' => 200,
-                'deposits' => 0,
-                'withdrawals' => 1,
-                'users' => 1,
-                'date' => Carbon::now()->format('Y-m-d'),
-                'country' => 'US',
+                'deposits'          => 0,
+                'withdrawals'       => 1,
+                'users'             => 1,
+                'date'              => Carbon::now()->format('Y-m-d'),
+                'country'           => 'US',
             ],
         ]);
     }
@@ -567,6 +564,7 @@ class ApiTest extends TestCase
 
     /**
      * Clears test user.
+     *
      * @param string $userEmail
      */
     private function clearTestUser($userEmail = 'test@test.com')
@@ -579,7 +577,9 @@ class ApiTest extends TestCase
 
     /**
      * Returns test user.
+     *
      * @param string $userEmail
+     *
      * @return mixed
      */
     private function getTestUser($userEmail = 'test@test.com')
@@ -589,18 +589,20 @@ class ApiTest extends TestCase
 
     /**
      * Add a new test user.
+     *
      * @param string $userEmail
+     *
      * @return mixed
      */
     private function addTestUser($userEmail = 'test@test.com')
     {
         return User::create([
-            'name'=> 'Test',
-            'email' => $userEmail,
-            'country' => 'BA',
-            'password' => 'password',
-            'password2' => 'password',
-            'balance' => '1000.00',
+            'name'          => 'Test',
+            'email'         => $userEmail,
+            'country'       => 'BA',
+            'password'      => 'password',
+            'password2'     => 'password',
+            'balance'       => '1000.00',
             'percent_bonus' => '10',
         ]);
     }
@@ -614,65 +616,65 @@ class ApiTest extends TestCase
         $user2 = $this->addTestUser('user2@example.com');
 
         $user1->transactions()->save(Transaction::create([
-            'type' => Transaction::TYPE_DEPOSIT,
+            'type'    => Transaction::TYPE_DEPOSIT,
             'country' => 'BA',
-            'date' => Carbon::now(),
-            'amount' => 230,
+            'date'    => Carbon::now(),
+            'amount'  => 230,
             'user_id' => $user1->id,
         ]));
 
         $user1->transactions()->save(Transaction::create([
-            'type' => Transaction::TYPE_DEPOSIT,
+            'type'    => Transaction::TYPE_DEPOSIT,
             'country' => 'BA',
-            'date' => Carbon::now(),
-            'amount' => 120,
+            'date'    => Carbon::now(),
+            'amount'  => 120,
             'user_id' => $user1->id,
         ]));
 
         $user1->transactions()->save(Transaction::create([
-            'type' => Transaction::TYPE_WITHDRAWAL,
+            'type'    => Transaction::TYPE_WITHDRAWAL,
             'country' => 'US',
-            'date' => Carbon::now(),
-            'amount' => 200,
+            'date'    => Carbon::now(),
+            'amount'  => 200,
             'user_id' => $user1->id,
         ]));
 
         $user1->transactions()->save(Transaction::create([
-            'type' => Transaction::TYPE_WITHDRAWAL,
+            'type'    => Transaction::TYPE_WITHDRAWAL,
             'country' => 'US',
-            'date' => Carbon::yesterday(),
-            'amount' => 160,
+            'date'    => Carbon::yesterday(),
+            'amount'  => 160,
             'user_id' => $user1->id,
         ]));
 
         $user2->transactions()->save(Transaction::create([
-            'type' => Transaction::TYPE_DEPOSIT,
+            'type'    => Transaction::TYPE_DEPOSIT,
             'country' => 'BA',
-            'date' => Carbon::now(),
-            'amount' => 98,
+            'date'    => Carbon::now(),
+            'amount'  => 98,
             'user_id' => $user2->id,
         ]));
 
         $user2->transactions()->save(Transaction::create([
-            'type' => Transaction::TYPE_DEPOSIT,
+            'type'    => Transaction::TYPE_DEPOSIT,
             'country' => 'BA',
-            'date' => Carbon::yesterday(),
-            'amount' => 121,
+            'date'    => Carbon::yesterday(),
+            'amount'  => 121,
             'user_id' => $user2->id,
         ]));
 
         $user2->transactions()->save(Transaction::create([
-            'type' => Transaction::TYPE_WITHDRAWAL,
+            'type'    => Transaction::TYPE_WITHDRAWAL,
             'country' => 'BA',
-            'date' => Carbon::yesterday(),
-            'amount' => 421,
+            'date'    => Carbon::yesterday(),
+            'amount'  => 421,
             'user_id' => $user2->id,
         ]));
         $user2->transactions()->save(Transaction::create([
-            'type' => Transaction::TYPE_WITHDRAWAL,
+            'type'    => Transaction::TYPE_WITHDRAWAL,
             'country' => 'US',
-            'date' => Carbon::yesterday(),
-            'amount' => 521,
+            'date'    => Carbon::yesterday(),
+            'amount'  => 521,
             'user_id' => $user2->id,
         ]));
     }
