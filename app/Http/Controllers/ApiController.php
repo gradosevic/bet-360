@@ -1,11 +1,14 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Http\Controllers\Auth\RegisterController;
-use App\User;
-use Illuminate\Http\Request;
 use App\Transaction;
+use App\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+
 /***
  * API Interface to Bet 360 app
  * Class ApiController
@@ -17,7 +20,8 @@ class ApiController extends Controller
      * Get an array of users
      * @return array User
      */
-    public function users(){
+    public function users()
+    {
         return User::orderBy('name')->get();
     }
 
@@ -26,7 +30,8 @@ class ApiController extends Controller
      * @param $id User ID
      * @return User
      */
-    public function getUser($id){
+    public function getUser($id)
+    {
         return User::find($id);
     }
 
@@ -36,8 +41,8 @@ class ApiController extends Controller
      * @return User
      * @throws \Exception validation errors
      */
-    public function createUser(Request $request){
-
+    public function createUser(Request $request)
+    {
         $user = new User;
         $user->name = $request->get('name');
         $user->email = $request->get('email');
@@ -48,18 +53,18 @@ class ApiController extends Controller
         $password = $request->get('password');
         $password2 = $request->get('password2');
 
-        if(!$user->name || !$user->email || !$user->country || !$user->balance || !$password || !$password2){
+        if (! $user->name || ! $user->email || ! $user->country || ! $user->balance || ! $password || ! $password2) {
             throw new \Exception('Please fill in all fields.');
         }
 
-        if($password != $password2){
+        if ($password != $password2) {
             throw new \Exception('Passwords do not match');
         }
         $user->password = Hash::make($password);
 
-        if(RegisterController::validator($request->all())){
+        if (RegisterController::validator($request->all())) {
             $user->save();
-        };
+        }
 
         return $user;
     }
@@ -69,11 +74,13 @@ class ApiController extends Controller
      * @param Request $request
      * @return User
      */
-    public function updateUser(Request $request){
+    public function updateUser(Request $request)
+    {
         $user = User::find($request->get('id'));
-        if($user){
+        if ($user) {
             $user->fill($request->all())->save();
         }
+
         return $user;
     }
 
@@ -83,12 +90,13 @@ class ApiController extends Controller
      * @return Transaction
      * @throws \Exception Minimal deposit amount
      */
-    public function deposit(Request $request){
+    public function deposit(Request $request)
+    {
         $user = User::find($request->get('user_id'));
 
-        if($user){
+        if ($user) {
             $amount = $request->get('amount');
-            if($amount < 5){
+            if ($amount < 5) {
                 throw new \Exception('Minimal deposit amount is 5');
             }
             $user->balance += $amount;
@@ -96,7 +104,7 @@ class ApiController extends Controller
             //Check if current transactions will be third in a row
             //If so, add bonus
             //+1 Count this transaction as well
-            if(($user->deposits()->count() + 1) % 3 == 0){
+            if (($user->deposits()->count() + 1) % 3 == 0) {
                 $user->balance += $amount * $user->percent_bonus / 100;
             }
 
@@ -105,28 +113,30 @@ class ApiController extends Controller
                 'country' => $user->country,
                 'date' => Carbon::now(),
                 'amount' => $amount,
-                'user_id' => $user->id
+                'user_id' => $user->id,
             ]);
             $user->transactions()->save($t);
 
             $user->save();
         }
+
         return $t;
     }
 
     /**
-     * Creates a new withdrawal transaction for a specified user
+     * Creates a new withdrawal transaction for a specified user.
      * @param Request $request
      * @return mixed
      * @throws \Exception Minimal withdrawal amount
      */
-    public function withdrawal(Request $request){
+    public function withdrawal(Request $request)
+    {
         $user = User::find($request->get('user_id'));
-        if($user){
+        if ($user) {
             $amount = $request->get('amount');
-            if($amount < 100){
+            if ($amount < 100) {
                 throw new \Exception('Minimal withdrawal amount is 100');
-            }else if ($amount > $user->balance){
+            } elseif ($amount > $user->balance) {
                 throw new \Exception('User does not have sufficient funds for this transaction');
             }
             $user->balance -= $amount;
@@ -136,17 +146,18 @@ class ApiController extends Controller
                 'country' => $user->country,
                 'date' => Carbon::now(),
                 'amount' => $amount,
-                'user_id' => $user->id
+                'user_id' => $user->id,
             ]);
 
             $user->transactions()->save($t);
             $user->save();
         }
+
         return $t;
     }
 
     /**
-     * Get an existing transaction by ID
+     * Get an existing transaction by ID.
      * @param $id Transaction ID
      * @return Transaction
      */
@@ -157,7 +168,7 @@ class ApiController extends Controller
 
     /**
      * Returns an array of transactions
-     * Optional filters: user_id, from, to
+     * Optional filters: user_id, from, to.
      * @param Request $request
      * @return array Transaction
      */
@@ -167,22 +178,20 @@ class ApiController extends Controller
         $to = $request->get('to');
         $user_id = $request->get('user_id');
 
-        $request = Transaction::with(array('user' => function($query)
-        {
+        $request = Transaction::with(['user' => function ($query) {
             $query->select('name', 'id');
+        }, ]);
 
-        }));
-
-        if($user_id){
+        if ($user_id) {
             $request->where('user_id', $user_id);
         }
 
-        if($from){
-            $request->where('date','>=', $from);
+        if ($from) {
+            $request->where('date', '>=', $from);
         }
 
-        if($to){
-            $request->where('date','<=', $to);
+        if ($to) {
+            $request->where('date', '<=', $to);
         }
 
         $request->orderBy('date', 'type');
@@ -212,12 +221,12 @@ class ApiController extends Controller
                     country
         ");
 
-        if($from){
-            $request->where('date','>=', $from);
+        if ($from) {
+            $request->where('date', '>=', $from);
         }
 
-        if($to){
-            $request->where('date','<=', $to);
+        if ($to) {
+            $request->where('date', '<=', $to);
         }
 
         $request->orderBy('date', 'country')
