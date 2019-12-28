@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Transaction;
-use App\User;
+use App\Models\Transaction;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;

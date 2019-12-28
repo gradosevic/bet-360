@@ -11,14 +11,14 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\User::class, 50)->create()->each(function ($u) {
-            $u->transactions()->save(factory(App\Transaction::class)->make());
-            $u->transactions()->save(factory(App\Transaction::class)->make());
-            $u->transactions()->save(factory(App\Transaction::class)->make());
-            $u->transactions()->save(factory(App\Transaction::class)->make());
-            $u->transactions()->save(factory(App\Transaction::class)->make());
+        factory(App\Models\User::class, 50)->create()->each(function ($u) {
+            $u->transactions()->save(factory(App\Models\Transaction::class)->make());
+            $u->transactions()->save(factory(App\Models\Transaction::class)->make());
+            $u->transactions()->save(factory(App\Models\Transaction::class)->make());
+            $u->transactions()->save(factory(App\Models\Transaction::class)->make());
+            $u->transactions()->save(factory(App\Models\Transaction::class)->make());
         });
-        $demoUser = factory(App\User::class)->create();
+        $demoUser = factory(App\Models\User::class)->create();
         $demoUser->name = 'Demo User';
         $demoUser->email = 'demo@demo.com';
         $demoUser->password = Hash::make('demo');
