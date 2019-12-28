@@ -43,7 +43,7 @@ class ApiController extends Controller
      */
     public function createUser(Request $request)
     {
-        $user = new User;
+        $user = new User();
         $user->name = $request->get('name');
         $user->email = $request->get('email');
 
@@ -53,7 +53,7 @@ class ApiController extends Controller
         $password = $request->get('password');
         $password2 = $request->get('password2');
 
-        if (! $user->name || ! $user->email || ! $user->country || ! $user->balance || ! $password || ! $password2) {
+        if (!$user->name || !$user->email || !$user->country || !$user->balance || !$password || !$password2) {
             throw new \Exception('Please fill in all fields.');
         }
 
@@ -109,10 +109,10 @@ class ApiController extends Controller
             }
 
             $t = Transaction::create([
-                'type' => Transaction::TYPE_DEPOSIT,
+                'type'    => Transaction::TYPE_DEPOSIT,
                 'country' => $user->country,
-                'date' => Carbon::now(),
-                'amount' => $amount,
+                'date'    => Carbon::now(),
+                'amount'  => $amount,
                 'user_id' => $user->id,
             ]);
             $user->transactions()->save($t);
@@ -125,9 +125,12 @@ class ApiController extends Controller
 
     /**
      * Creates a new withdrawal transaction for a specified user.
+     *
      * @param Request $request
-     * @return mixed
+     *
      * @throws \Exception Minimal withdrawal amount
+     *
+     * @return mixed
      */
     public function withdrawal(Request $request)
     {
@@ -142,10 +145,10 @@ class ApiController extends Controller
             $user->balance -= $amount;
 
             $t = Transaction::create([
-                'type' => Transaction::TYPE_DEPOSIT,
+                'type'    => Transaction::TYPE_DEPOSIT,
                 'country' => $user->country,
-                'date' => Carbon::now(),
-                'amount' => $amount,
+                'date'    => Carbon::now(),
+                'amount'  => $amount,
                 'user_id' => $user->id,
             ]);
 
@@ -158,7 +161,9 @@ class ApiController extends Controller
 
     /**
      * Get an existing transaction by ID.
+     *
      * @param $id Transaction ID
+     *
      * @return Transaction
      */
     public function transaction($id)
@@ -169,7 +174,9 @@ class ApiController extends Controller
     /**
      * Returns an array of transactions
      * Optional filters: user_id, from, to.
+     *
      * @param Request $request
+     *
      * @return array Transaction
      */
     public function transactions(Request $request)
@@ -180,7 +187,7 @@ class ApiController extends Controller
 
         $request = Transaction::with(['user' => function ($query) {
             $query->select('name', 'id');
-        }, ]);
+        }]);
 
         if ($user_id) {
             $request->where('user_id', $user_id);

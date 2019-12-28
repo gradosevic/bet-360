@@ -40,6 +40,7 @@ class User extends Authenticatable
 
     /**
      * Returns random bonus value between 5 and 20 (%).
+     *
      * @return int Bonus between 5 and 20 (%)
      */
     public static function generateBonus()
