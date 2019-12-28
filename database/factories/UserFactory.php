@@ -21,21 +21,21 @@ function rand_balance($min, $max, $decimals = 0)
 
 $factory->define(App\Models\User::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
+        'name'           => $faker->name,
+        'email'          => $faker->unique()->safeEmail,
+        'password'       => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
         'remember_token' => str_random(10),
-        'percent_bonus' => \App\Models\User::generateBonus(),
-        'country' => array_rand(countries()),
-        'balance' => rand_balance(10, 100, 2),
+        'percent_bonus'  => \App\Models\User::generateBonus(),
+        'country'        => array_rand(countries()),
+        'balance'        => rand_balance(10, 100, 2),
     ];
 });
 
 $factory->define(App\Models\Transaction::class, function (Faker $faker) {
     return [
-        'type' => rand(1, 2),
+        'type'    => rand(1, 2),
         'country' => array_rand(countries()),
-        'date' => $faker->dateTimeBetween('-1 year'),
-        'amount' => rand_balance(10, 100, 2),
+        'date'    => $faker->dateTimeBetween('-1 year'),
+        'amount'  => rand_balance(10, 100, 2),
     ];
 });
