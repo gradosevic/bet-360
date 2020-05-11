@@ -2,18 +2,18 @@
 
 namespace Tests\Feature;
 
-use App\Transaction;
-use App\User;
+use App\Models\Transaction;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use PHPUnit\Framework\TestResult;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ApiTest extends TestCase
 {
     /**
-     * Tests GET /api/users method. It should return an array of users
+     * Tests GET /api/users method. It should return an array of users.
      */
     public function test_get_users()
     {
@@ -23,21 +23,22 @@ class ApiTest extends TestCase
         $response->assertStatus(200);
 
         $data = $response->json();
-        $this->assertTrue(sizeof($data) > 0);
+        $this->assertTrue(count($data) > 0);
 
         $item = $data[0];
-        $this->assertTrue(!empty($item['id']));
-        $this->assertTrue(!empty($item['name']));
-        $this->assertTrue(!empty($item['email']));
+        $this->assertTrue(! empty($item['id']));
+        $this->assertTrue(! empty($item['name']));
+        $this->assertTrue(! empty($item['email']));
         $this->assertEquals($item['email'], filter_var($item['email'], FILTER_VALIDATE_EMAIL));
-        $this->assertTrue(!empty($item['percent_bonus']));
-        $this->assertTrue(!empty($item['country']));
+        $this->assertTrue(! empty($item['percent_bonus']));
+        $this->assertTrue(! empty($item['country']));
     }
 
     /**
-     * Tests GET /api/user/{id} method
+     * Tests GET /api/user/{id} method.
      */
-    public function test_get_user(){
+    public function test_get_user()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -55,9 +56,10 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Tests PUT /api/user method
+     * Tests PUT /api/user method.
      */
-    public function test_create_user(){
+    public function test_create_user()
+    {
         $this->withoutMiddleware();
         $this->clearTestUser();
 
@@ -72,7 +74,7 @@ class ApiTest extends TestCase
             'country' => $country,
             'password' => 'password',
             'password2' => 'password',
-            'balance' => '10.00'
+            'balance' => '10.00',
         ]);
 
         $data = $response->json();
@@ -82,15 +84,16 @@ class ApiTest extends TestCase
         $this->assertEquals($balance, $data['balance']);
         $this->assertEquals($country, $data['country']);
         $this->assertTrue(is_numeric($data['id']));
-        $this->assertTrue($data['percent_bonus']>=5);
-        $this->assertTrue($data['percent_bonus']<=20);
+        $this->assertTrue($data['percent_bonus'] >= 5);
+        $this->assertTrue($data['percent_bonus'] <= 20);
         $this->assertTrue(empty($data['exception']));
     }
 
     /***
      * Tests PUT /api/user method
      */
-    public function test_try_to_create_a_user_with_the_same_email_address(){
+    public function test_try_to_create_a_user_with_the_same_email_address()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -104,7 +107,7 @@ class ApiTest extends TestCase
             'country' => 'BA',
             'password' => 'password',
             'password2' => 'password',
-            'balance' => '10.00'
+            'balance' => '10.00',
         ]);
         $data = $response->json();
         $this->assertTrue(empty($data['email']));
@@ -112,9 +115,10 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Tests POST /api/user method
+     * Tests POST /api/user method.
      */
-    public function test_update_existing_user(){
+    public function test_update_existing_user()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -131,7 +135,7 @@ class ApiTest extends TestCase
 
         //Clear updated test user from previous testing
         $updatedTestUser = User::where('email', $updatedUserEmail)->first();
-        if($updatedTestUser){
+        if ($updatedTestUser) {
             $updatedTestUser->delete();
         }
 
@@ -140,7 +144,7 @@ class ApiTest extends TestCase
             'name'=> $updatedUserName,
             'country' => $updatedCountry,
             'balance' => $updatedBalance,
-            'id' => $user->id
+            'id' => $user->id,
         ]);
 
         $data = $response->json();
@@ -150,17 +154,16 @@ class ApiTest extends TestCase
         $this->assertEquals($updatedCountry, $data['country']);
         $this->assertEquals($updatedBalance, $data['balance']);
 
-
         //Make sure that user with the previous email does not exist
         $previousUser = User::where('email', $userEmail)->first();
         $this->assertNull($previousUser);
-
     }
 
     /**
-     * Tests that changing user's country does not affect previous transactions
+     * Tests that changing user's country does not affect previous transactions.
      */
-    public function test_user_changing_country_does_not_affect_transaction_coutry(){
+    public function test_user_changing_country_does_not_affect_transaction_coutry()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -179,14 +182,15 @@ class ApiTest extends TestCase
         $user->country = 'US';
         $user->save();
 
-        $t = Transaction::where('id',$transaction['id'])->first();
+        $t = Transaction::where('id', $transaction['id'])->first();
         $this->assertEquals($t->country, $transaction['country']);
     }
 
     /**
-     * Tests POST /api/deposit method
+     * Tests POST /api/deposit method.
      */
-    public function test_deposit(){
+    public function test_deposit()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -203,7 +207,6 @@ class ApiTest extends TestCase
 
         $user = $this->getTestUser();
         $this->assertEquals($balance + $firstDeposit, $user->balance);
-
 
         //Deposit second time
         $secondDeposit = 51.56;
@@ -229,13 +232,13 @@ class ApiTest extends TestCase
         $expectedFinalBalance += $thirdDeposit * $user->percent_bonus / 100;
 
         $this->assertEquals($expectedFinalBalance, $user->balance);
-
     }
 
     /**
-     * Tests that /api/deposit method has minimum allowed deposit limitation
+     * Tests that /api/deposit method has minimum allowed deposit limitation.
      */
-    public function test_minimum_allowed_deposit(){
+    public function test_minimum_allowed_deposit()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -263,14 +266,15 @@ class ApiTest extends TestCase
         $data = $response->json();
         $user = $this->getTestUser();
 
-        $this->assertTrue(!empty($data['exception']));
+        $this->assertTrue(! empty($data['exception']));
         $this->assertEquals($balance + $firstDeposit, $user->balance);
     }
 
     /**
-     * Tests GET /api/transactions method
+     * Tests GET /api/transactions method.
      */
-    public function test_get_transactions(){
+    public function test_get_transactions()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -281,27 +285,28 @@ class ApiTest extends TestCase
             'country' => 'BA',
             'date' => Carbon::now(),
             'amount' => 230,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]));
 
         $response = $this->json('GET', 'api/transactions');
         $transactions = $response->json();
 
-        $this->assertTrue(sizeof($transactions) > 0);
+        $this->assertTrue(count($transactions) > 0);
 
         $t = $transactions[0];
-        $this->assertTrue(!empty($t['country']));
-        $this->assertTrue(!empty($t['date']));
-        $this->assertTrue(!empty($t['amount']));
-        $this->assertTrue(!empty($t['type']));
-        $this->assertTrue(!empty($t['user']['name']));
-        $this->assertTrue(!empty($t['user']['id']));
+        $this->assertTrue(! empty($t['country']));
+        $this->assertTrue(! empty($t['date']));
+        $this->assertTrue(! empty($t['amount']));
+        $this->assertTrue(! empty($t['type']));
+        $this->assertTrue(! empty($t['user']['name']));
+        $this->assertTrue(! empty($t['user']['id']));
     }
 
     /**
-     * Tests /api/transactions method filtered by user
+     * Tests /api/transactions method filtered by user.
      */
-    public function test_get_user_transactions(){
+    public function test_get_user_transactions()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -312,7 +317,7 @@ class ApiTest extends TestCase
             'country' => 'BA',
             'date' => Carbon::now(),
             'amount' => 230,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
         $user->transactions()->save($t1);
 
@@ -321,17 +326,17 @@ class ApiTest extends TestCase
             'country' => 'BA',
             'date' => Carbon::yesterday(),
             'amount' => 130,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
         $user->transactions()->save($t2);
 
         $response = $this->json('GET', 'api/transactions', [
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
-        $trans= $response->json();
+        $trans = $response->json();
 
-        $this->assertEquals(2, sizeof($trans));
+        $this->assertEquals(2, count($trans));
         $this->assertEquals($t1->id, $trans[0]['id']);
         $this->assertEquals($t1->type, $trans[0]['type']);
         $this->assertEquals($t2->id, $trans[1]['id']);
@@ -339,9 +344,10 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Tests /api/transactions method filtered by date
+     * Tests /api/transactions method filtered by date.
      */
-    public function test_get_transactions_filtered_by_date(){
+    public function test_get_transactions_filtered_by_date()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -354,7 +360,7 @@ class ApiTest extends TestCase
             'country' => 'BA',
             'date' => Carbon::now(),
             'amount' => 230,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
         $user->transactions()->save($t1);
 
@@ -363,7 +369,7 @@ class ApiTest extends TestCase
             'country' => 'BA',
             'date' => Carbon::yesterday(),
             'amount' => 130,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
         $user->transactions()->save($t2);
 
@@ -372,17 +378,18 @@ class ApiTest extends TestCase
             'to' => Carbon::today()->format('Y-m-d'),
         ]);
 
-        $trans= $response->json();
+        $trans = $response->json();
 
-        $this->assertEquals(1, sizeof($trans));
+        $this->assertEquals(1, count($trans));
         $this->assertEquals($t1->id, $trans[0]['id']);
         $this->assertEquals($t1->type, $trans[0]['type']);
     }
 
     /**
-     * Tests /api/transaction/{id} method
+     * Tests /api/transaction/{id} method.
      */
-    public function test_get_transaction(){
+    public function test_get_transaction()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -393,11 +400,11 @@ class ApiTest extends TestCase
             'country' => 'BA',
             'date' => Carbon::now(),
             'amount' => 230,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
         $user->transactions()->save($t1);
 
-        $response = $this->json('GET', 'api/transaction/'. $t1->id);
+        $response = $this->json('GET', 'api/transaction/'.$t1->id);
         $data = $response->json();
         $this->assertEquals($t1->id, $data['id']);
         $this->assertEquals($t1->type, $data['type']);
@@ -407,9 +414,10 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Tests /api/withdrawal method
+     * Tests /api/withdrawal method.
      */
-    public function test_withdrawal(){
+    public function test_withdrawal()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -428,9 +436,10 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Tests that /api/withdrawal method has minimum amount limitation
+     * Tests that /api/withdrawal method has minimum amount limitation.
      */
-    public function test_minimum_withdrawal_amount(){
+    public function test_minimum_withdrawal_amount()
+    {
         $this->withoutMiddleware();
 
         $this->clearTestUser();
@@ -458,14 +467,15 @@ class ApiTest extends TestCase
         $data = $response->json();
         $user = $this->getTestUser();
 
-        $this->assertTrue(!empty($data['exception']));
+        $this->assertTrue(! empty($data['exception']));
         $this->assertEquals($balance - $firstWithdrawal, $user->balance);
     }
 
     /**
-     * Tests /api/reports method
+     * Tests /api/reports method.
      */
-    public function test_report_returns_aggregated_data(){
+    public function test_report_returns_aggregated_data()
+    {
         $this->withoutMiddleware();
 
         $this->clearReportTestData();
@@ -478,48 +488,49 @@ class ApiTest extends TestCase
 
         $response->assertJson([
             [
-                "total_deposits" => 448,
-                "total_withdrawals" => 0,
-                "deposits" => 3,
-                "withdrawals" => 0,
-                "users" => 2,
-                "date" => Carbon::now()->format('Y-m-d'),
-                "country" => 'BA'
+                'total_deposits' => 448,
+                'total_withdrawals' => 0,
+                'deposits' => 3,
+                'withdrawals' => 0,
+                'users' => 2,
+                'date' => Carbon::now()->format('Y-m-d'),
+                'country' => 'BA',
             ],
             [
-                "total_deposits" => 0,
-                "total_withdrawals" => 200,
-                "deposits" => 0,
-                "withdrawals" => 1,
-                "users" => 1,
-                "date" => Carbon::now()->format('Y-m-d'),
-                "country" => 'US'
+                'total_deposits' => 0,
+                'total_withdrawals' => 200,
+                'deposits' => 0,
+                'withdrawals' => 1,
+                'users' => 1,
+                'date' => Carbon::now()->format('Y-m-d'),
+                'country' => 'US',
             ],
             [
-                "total_deposits" => 121,
-                "total_withdrawals" => 421,
-                "deposits" => 1,
-                "withdrawals" => 1,
-                "users" => 1,
-                "date" => Carbon::yesterday()->format('Y-m-d'),
-                "country" => 'BA'
+                'total_deposits' => 121,
+                'total_withdrawals' => 421,
+                'deposits' => 1,
+                'withdrawals' => 1,
+                'users' => 1,
+                'date' => Carbon::yesterday()->format('Y-m-d'),
+                'country' => 'BA',
             ],
             [
-                "total_deposits" => 0,
-                "total_withdrawals" => 681,
-                "deposits" => 0,
-                "withdrawals" => 2,
-                "users" => 2,
-                "date" => Carbon::yesterday()->format('Y-m-d'),
-                "country" => "US"
+                'total_deposits' => 0,
+                'total_withdrawals' => 681,
+                'deposits' => 0,
+                'withdrawals' => 2,
+                'users' => 2,
+                'date' => Carbon::yesterday()->format('Y-m-d'),
+                'country' => 'US',
             ],
         ]);
     }
 
     /**
-     * Tests /api/reports filter by dates (from, to)
+     * Tests /api/reports filter by dates (from, to).
      */
-    public function test_report_filters_today(){
+    public function test_report_filters_today()
+    {
         $this->withoutMiddleware();
 
         $this->clearReportTestData();
@@ -532,54 +543,57 @@ class ApiTest extends TestCase
 
         $response->assertJson([
             [
-                "total_deposits" => 448,
-                "total_withdrawals" => 0,
-                "deposits" => 3,
-                "withdrawals" => 0,
-                "users" => 2,
-                "date" => Carbon::now()->format('Y-m-d'),
-                "country" => 'BA'
+                'total_deposits' => 448,
+                'total_withdrawals' => 0,
+                'deposits' => 3,
+                'withdrawals' => 0,
+                'users' => 2,
+                'date' => Carbon::now()->format('Y-m-d'),
+                'country' => 'BA',
             ],
             [
-                "total_deposits" => 0,
-                "total_withdrawals" => 200,
-                "deposits" => 0,
-                "withdrawals" => 1,
-                "users" => 1,
-                "date" => Carbon::now()->format('Y-m-d'),
-                "country" => 'US'
-            ]
+                'total_deposits' => 0,
+                'total_withdrawals' => 200,
+                'deposits' => 0,
+                'withdrawals' => 1,
+                'users' => 1,
+                'date' => Carbon::now()->format('Y-m-d'),
+                'country' => 'US',
+            ],
         ]);
     }
 
     //PRIVATE METHODS - HELPERS
 
     /**
-     * Clears test user
+     * Clears test user.
      * @param string $userEmail
      */
-    private function clearTestUser($userEmail = 'test@test.com'){
+    private function clearTestUser($userEmail = 'test@test.com')
+    {
         $userRecord = $this->getTestUser($userEmail);
-        if($userRecord){
+        if ($userRecord) {
             $userRecord->delete();
         }
     }
 
     /**
-     * Returns test user
+     * Returns test user.
      * @param string $userEmail
      * @return mixed
      */
-    private function getTestUser($userEmail = 'test@test.com'){
+    private function getTestUser($userEmail = 'test@test.com')
+    {
         return User::where('email', $userEmail)->first();
     }
 
     /**
-     * Add a new test user
+     * Add a new test user.
      * @param string $userEmail
      * @return mixed
      */
-    private function addTestUser($userEmail = 'test@test.com'){
+    private function addTestUser($userEmail = 'test@test.com')
+    {
         return User::create([
             'name'=> 'Test',
             'email' => $userEmail,
@@ -587,15 +601,15 @@ class ApiTest extends TestCase
             'password' => 'password',
             'password2' => 'password',
             'balance' => '1000.00',
-            'percent_bonus' => '10'
+            'percent_bonus' => '10',
         ]);
     }
 
     /**
-     * Add test data for testing reports
+     * Add test data for testing reports.
      */
-    private function addReportTestData(){
-
+    private function addReportTestData()
+    {
         $user1 = $this->addTestUser('user1@example.com');
         $user2 = $this->addTestUser('user2@example.com');
 
@@ -604,7 +618,7 @@ class ApiTest extends TestCase
             'country' => 'BA',
             'date' => Carbon::now(),
             'amount' => 230,
-            'user_id' => $user1->id
+            'user_id' => $user1->id,
         ]));
 
         $user1->transactions()->save(Transaction::create([
@@ -612,7 +626,7 @@ class ApiTest extends TestCase
             'country' => 'BA',
             'date' => Carbon::now(),
             'amount' => 120,
-            'user_id' => $user1->id
+            'user_id' => $user1->id,
         ]));
 
         $user1->transactions()->save(Transaction::create([
@@ -620,7 +634,7 @@ class ApiTest extends TestCase
             'country' => 'US',
             'date' => Carbon::now(),
             'amount' => 200,
-            'user_id' => $user1->id
+            'user_id' => $user1->id,
         ]));
 
         $user1->transactions()->save(Transaction::create([
@@ -628,7 +642,7 @@ class ApiTest extends TestCase
             'country' => 'US',
             'date' => Carbon::yesterday(),
             'amount' => 160,
-            'user_id' => $user1->id
+            'user_id' => $user1->id,
         ]));
 
         $user2->transactions()->save(Transaction::create([
@@ -636,7 +650,7 @@ class ApiTest extends TestCase
             'country' => 'BA',
             'date' => Carbon::now(),
             'amount' => 98,
-            'user_id' => $user2->id
+            'user_id' => $user2->id,
         ]));
 
         $user2->transactions()->save(Transaction::create([
@@ -644,7 +658,7 @@ class ApiTest extends TestCase
             'country' => 'BA',
             'date' => Carbon::yesterday(),
             'amount' => 121,
-            'user_id' => $user2->id
+            'user_id' => $user2->id,
         ]));
 
         $user2->transactions()->save(Transaction::create([
@@ -652,21 +666,22 @@ class ApiTest extends TestCase
             'country' => 'BA',
             'date' => Carbon::yesterday(),
             'amount' => 421,
-            'user_id' => $user2->id
+            'user_id' => $user2->id,
         ]));
         $user2->transactions()->save(Transaction::create([
             'type' => Transaction::TYPE_WITHDRAWAL,
             'country' => 'US',
             'date' => Carbon::yesterday(),
             'amount' => 521,
-            'user_id' => $user2->id
+            'user_id' => $user2->id,
         ]));
     }
 
     /**
-     * Clear test data for reports
+     * Clear test data for reports.
      */
-    private function clearReportTestData(){
+    private function clearReportTestData()
+    {
         $this->clearTestUser('user1@example.com');
         $this->clearTestUser('user2@example.com');
 
