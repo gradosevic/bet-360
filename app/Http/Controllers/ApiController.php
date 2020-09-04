@@ -187,7 +187,7 @@ class ApiController extends Controller
 
         $request = Transaction::with(['user' => function ($query) {
             $query->select('name', 'id');
-        }, ]);
+        }]);
 
         if ($user_id) {
             $request->where('user_id', $user_id);
