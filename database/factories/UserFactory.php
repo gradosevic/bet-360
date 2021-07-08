@@ -12,7 +12,8 @@ use Faker\Generator as Faker;
 | model instances for testing / seeding your application's database.
 |
 */
-function rand_balance($min, $max, $decimals = 0) {
+function rand_balance($min, $max, $decimals = 0)
+{
     $scale = pow(10, $decimals);
     return mt_rand($min * $scale, $max * $scale) / $scale;
 }

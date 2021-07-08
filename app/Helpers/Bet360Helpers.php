@@ -1,5 +1,6 @@
 <?php
-function countries(){
+function countries()
+{
     return array
     (
         'AF' => 'Afghanistan',
