@@ -33,7 +33,8 @@ class User extends Authenticatable
         return $this->hasMany('App\Transaction');
     }
 
-    public function deposits(){
+    public function deposits()
+    {
         return $this->transactions()->where('type', 1)->get();
     }
 
@@ -41,7 +42,8 @@ class User extends Authenticatable
      * Returns random bonus value between 5 and 20 (%)
      * @return int Bonus between 5 and 20 (%)
      */
-    public static function generateBonus(){
+    public static function generateBonus()
+    {
         return rand(5, 20);
     }
 }
