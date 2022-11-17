@@ -17,8 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['middleware'=>'auth:api'], function()
-{
+Route::group(['middleware'=>'auth:api'], function () {
     Route::get('users', 'ApiController@users');
     Route::get('user/{id}', 'ApiController@getUser');
     Route::put('user', 'ApiController@createUser');
